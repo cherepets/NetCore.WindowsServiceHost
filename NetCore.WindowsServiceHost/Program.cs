@@ -1,4 +1,6 @@
-﻿using System.ServiceProcess;
+﻿using NetCore.WindowsServiceHost.ServiceManagement;
+using System;
+using System.ServiceProcess;
 
 namespace NetCore.WindowsServiceHost
 {
@@ -6,11 +8,22 @@ namespace NetCore.WindowsServiceHost
     {
         static void Main()
         {
-            var servicesToRun = new ServiceBase[]
-            {
-                new NetCoreHostService()
-            };
-            ServiceBase.Run(servicesToRun);
+			if (Environment.UserInteractive)
+				LaunchUI();
+			else
+				RunService();
         }
-    }
+
+		private static void LaunchUI()
+		{
+			var form = new ServiceManagementView();
+			form.ShowDialog();
+		}
+
+		private static void RunService()
+		{
+			var services = new [] { new NetCoreHostService() };
+			ServiceBase.Run(services);
+		}
+	}
 }

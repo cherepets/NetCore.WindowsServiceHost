@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Configuration;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 
 namespace NetCore.WindowsServiceHost
 {
-    public static class Config
+	public static class Config
     {
         public static string Executeable { get; private set; }
         public static string ServiceName { get; private set; }

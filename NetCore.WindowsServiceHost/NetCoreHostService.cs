@@ -13,7 +13,9 @@ namespace NetCore.WindowsServiceHost
         private Process _process;
         private object _lock;
 
-        public NetCoreHostService()
+		public bool IsRunning { get; private set; }
+
+		public NetCoreHostService()
         {
             InitializeComponent();
             ServiceName = Config.ServiceName;
@@ -21,7 +23,7 @@ namespace NetCore.WindowsServiceHost
 
         protected override void OnStart(string[] args)
         {
-			CanStop = true;
+			IsRunning = true;
 			Debug.WriteLine($"Service [{ServiceName}] started");
             _shouldRestart = true;
             _lock = new object();
@@ -35,8 +37,8 @@ namespace NetCore.WindowsServiceHost
 		{
 			lock (_lock)
 			{
-				if (!CanStop) return;
-				CanStop = false;
+				if (!IsRunning) return;
+				IsRunning = false;
 			}
             Debug.WriteLine($"Service [{ServiceName}] stopped");
             try
@@ -78,7 +80,7 @@ namespace NetCore.WindowsServiceHost
                 Debug.WriteLine("Launching process");
             }
             var process = _process;
-            while (CanStop)
+            while (IsRunning)
             {
                 try
                 {
@@ -88,7 +90,7 @@ namespace NetCore.WindowsServiceHost
                     {
                         restartNow = process == _process && !process.IsRunning();
                     }
-                    if (restartNow && CanStop)
+                    if (restartNow && IsRunning)
                     {
                         Debug.WriteLine("Process seems to be not running");
 						if (Config.AutoRestart)
