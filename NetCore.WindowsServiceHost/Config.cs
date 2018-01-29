@@ -13,9 +13,11 @@ namespace NetCore.WindowsServiceHost
         public static string Executeable { get; private set; }
         public static string ServiceName { get; private set; }
         public static TimeSpan PingInterval { get; private set; }
-        public static bool CreateNoWindow { get; private set; }
+		public static bool AutoRestart { get; private set; }
 
-        private static readonly TimeSpan DefaultPingInterval = TimeSpan.FromMilliseconds(100);
+		public static bool DebugMode { get; set; }
+
+		private static readonly TimeSpan DefaultPingInterval = TimeSpan.FromMilliseconds(100);
         private const bool DefaultCreateNoWindow = false;
 
         static Config()
@@ -29,10 +31,10 @@ namespace NetCore.WindowsServiceHost
             PingInterval = TimeSpan.TryParse(ReadKey(xconfig, nameof(PingInterval)), CultureInfo.InvariantCulture, out TimeSpan pingInterval)
                 ? pingInterval
                 : DefaultPingInterval;
-            CreateNoWindow = bool.TryParse(ReadKey(xconfig, nameof(CreateNoWindow)), out bool createNoWindow)
-                ? createNoWindow
-                : DefaultCreateNoWindow;
-        }
+			AutoRestart = bool.TryParse(ReadKey(xconfig, nameof(AutoRestart)), out bool autoRestart)
+				? autoRestart
+				: false;
+		}
 
         private static string ReadKey(XElement xelement, string key)
         {

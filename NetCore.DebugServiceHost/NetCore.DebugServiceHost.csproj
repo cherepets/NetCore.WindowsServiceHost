@@ -48,12 +48,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="NetCore.SampleApp.runtimeconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetCore.WindowsServiceHost\NetCore.WindowsServiceHost.csproj">
       <Project>{b41cec36-86d0-4b8e-8239-4275fea9b815}</Project>
       <Name>NetCore.WindowsServiceHost</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NetCore.SampleApp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

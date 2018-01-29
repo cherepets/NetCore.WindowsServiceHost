@@ -25,6 +25,7 @@ namespace NetCore.DebugServiceHost
 
         static void Main(string[] args)
         {
+			Config.DebugMode = true;
             var service = new NetCoreHostService();
             var start = service.GetType().GetMethod("OnStart", BindingFlags.NonPublic | BindingFlags.Instance);
             var stop = service.GetType().GetMethod("OnStop", BindingFlags.NonPublic | BindingFlags.Instance);

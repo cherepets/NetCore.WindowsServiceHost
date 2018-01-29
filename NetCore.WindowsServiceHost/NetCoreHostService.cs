@@ -21,7 +21,8 @@ namespace NetCore.WindowsServiceHost
 
         protected override void OnStart(string[] args)
         {
-            Debug.WriteLine($"Service [{ServiceName}] started");
+			CanStop = true;
+			Debug.WriteLine($"Service [{ServiceName}] started");
             _shouldRestart = true;
             _lock = new object();
             var assembly = Assembly.GetExecutingAssembly();
@@ -31,7 +32,12 @@ namespace NetCore.WindowsServiceHost
         }
 
         protected override void OnStop()
-        {
+		{
+			lock (_lock)
+			{
+				if (!CanStop) return;
+				CanStop = false;
+			}
             Debug.WriteLine($"Service [{ServiceName}] stopped");
             try
             {
@@ -63,8 +69,8 @@ namespace NetCore.WindowsServiceHost
                         FileName = "dotnet",
                         Arguments = Config.Executeable,
                         UseShellExecute = false,
-                        CreateNoWindow = Config.CreateNoWindow
-                    }
+                        CreateNoWindow = !Config.DebugMode
+					}
                 };
                 _process.Exited += Process_Exited;
                 _process.Disposed += Process_Exited;
@@ -72,7 +78,7 @@ namespace NetCore.WindowsServiceHost
                 Debug.WriteLine("Launching process");
             }
             var process = _process;
-            while (true)
+            while (CanStop)
             {
                 try
                 {
@@ -82,18 +88,24 @@ namespace NetCore.WindowsServiceHost
                     {
                         restartNow = process == _process && !process.IsRunning();
                     }
-                    if (restartNow)
+                    if (restartNow && CanStop)
                     {
                         Debug.WriteLine("Process seems to be not running");
-                        Restart();
+						if (Config.AutoRestart)
+							Restart();
+						else
+							Stop();
                         return;
                     }
                 }
                 catch (Exception exception)
                 {
                     Debug.WriteLine(exception);
-                    Restart();
-                    return;
+					if (Config.AutoRestart)
+						Restart();
+					else
+						Stop();
+					return;
                 }
             }
         }
@@ -101,7 +113,10 @@ namespace NetCore.WindowsServiceHost
         private void Process_Exited(object sender, EventArgs e)
         {
             Debug.WriteLine("Process exited");
-            Restart();
-        }
+			if (Config.AutoRestart)
+				Restart();
+			else
+				Stop();
+		}
     }
 }
