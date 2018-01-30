@@ -12,6 +12,14 @@ namespace NetCore.WindowsServiceHost.ServiceManagement
 {
 	public class ServiceManagementViewModel : INotifyPropertyChanged
 	{
+		public const string Status_NotInstalled = "Not installed";
+		public const string Status_Pending = "Pending";
+		public static readonly string Status_Running = ServiceControllerStatus.Running.ToString();
+		public static readonly string Status_Paused = ServiceControllerStatus.Paused.ToString();
+		public static readonly string Status_Stopped = ServiceControllerStatus.Stopped.ToString();
+
+		private bool _dontPoll;
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public ServiceController Service { get; private set; }
@@ -50,10 +58,8 @@ namespace NetCore.WindowsServiceHost.ServiceManagement
 			{
 				try
 				{
-					Service = FindService(Config.ServiceName);
-					Status = Service == null
-						? "Not installed"
-						: Service.Status.ToString();
+					if (!_dontPoll)
+						UpdateStatus();
 					await Task.Delay(1000);
 				}
 				catch (Exception exception)
@@ -63,15 +69,54 @@ namespace NetCore.WindowsServiceHost.ServiceManagement
 			}
 		}
 
-		private void Try(Action action)
+		private async void Try(Action action)
 		{
 			try
 			{
-				action?.Invoke();
+				_dontPoll = true;
+				UpdateStatus(Status_Pending);
+				await Task.Run(() => action?.Invoke());
+				UpdateStatus();
 			}
 			catch (Exception exception)
 			{
 				MessageBox.Show(exception.Message, exception.GetType().Name);
+			}
+			finally
+			{
+				_dontPoll = false;
+			}
+		}
+
+		private void UpdateStatus(string value = null)
+		{
+			if (value == null)
+			{
+				Service = FindService(Config.ServiceName);
+				if (Service == null)
+					Status = Status_NotInstalled;
+				else
+				{
+					switch (Service.Status)
+					{
+						case ServiceControllerStatus.Running:
+							Status = Status_Running;
+							break;
+						case ServiceControllerStatus.Paused:
+							Status = Status_Paused;
+							break;
+						case ServiceControllerStatus.Stopped:
+							Status = Status_Stopped;
+							break;
+						default:
+							Status = Status_Pending;
+							break;
+					}
+				}
+			}
+			else
+			{
+				Status = value;
 			}
 		}
 

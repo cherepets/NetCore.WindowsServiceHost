@@ -36,6 +36,7 @@
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.StopButton = new System.Windows.Forms.Button();
 			this.StartButton = new System.Windows.Forms.Button();
+			this.InvisibleButton = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.SuspendLayout();
@@ -72,7 +73,7 @@
 			this.UninstallButton.Location = new System.Drawing.Point(85, 4);
 			this.UninstallButton.Name = "UninstallButton";
 			this.UninstallButton.Size = new System.Drawing.Size(75, 23);
-			this.UninstallButton.TabIndex = 1;
+			this.UninstallButton.TabIndex = 2;
 			this.UninstallButton.Text = "Uninstall";
 			this.UninstallButton.UseVisualStyleBackColor = true;
 			this.UninstallButton.Click += new System.EventHandler(this.UninstallButton_Click);
@@ -82,7 +83,7 @@
 			this.InstallButton.Location = new System.Drawing.Point(4, 4);
 			this.InstallButton.Name = "InstallButton";
 			this.InstallButton.Size = new System.Drawing.Size(75, 23);
-			this.InstallButton.TabIndex = 0;
+			this.InstallButton.TabIndex = 1;
 			this.InstallButton.Text = "Install";
 			this.InstallButton.UseVisualStyleBackColor = true;
 			this.InstallButton.Click += new System.EventHandler(this.InstallButton_Click);
@@ -101,7 +102,7 @@
 			this.StopButton.Location = new System.Drawing.Point(85, 4);
 			this.StopButton.Name = "StopButton";
 			this.StopButton.Size = new System.Drawing.Size(75, 23);
-			this.StopButton.TabIndex = 1;
+			this.StopButton.TabIndex = 4;
 			this.StopButton.Text = "Stop";
 			this.StopButton.UseVisualStyleBackColor = true;
 			this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
@@ -111,16 +112,25 @@
 			this.StartButton.Location = new System.Drawing.Point(4, 4);
 			this.StartButton.Name = "StartButton";
 			this.StartButton.Size = new System.Drawing.Size(75, 23);
-			this.StartButton.TabIndex = 0;
+			this.StartButton.TabIndex = 3;
 			this.StartButton.Text = "Start";
 			this.StartButton.UseVisualStyleBackColor = true;
 			this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
+			// 
+			// InvisibleButton
+			// 
+			this.InvisibleButton.Location = new System.Drawing.Point(-1000, -1000);
+			this.InvisibleButton.Name = "InvisibleButton";
+			this.InvisibleButton.Size = new System.Drawing.Size(75, 23);
+			this.InvisibleButton.TabIndex = 0;
+			this.InvisibleButton.UseVisualStyleBackColor = true;
 			// 
 			// ServiceManagementView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(188, 105);
+			this.Controls.Add(this.InvisibleButton);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.StatusCaption);
@@ -145,5 +155,6 @@
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.Button StopButton;
 		private System.Windows.Forms.Button StartButton;
+		private System.Windows.Forms.Button InvisibleButton;
 	}
 }
